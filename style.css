@@ -40,3 +40,23 @@ body {
   background-color: #111;
   color: #fff;
 }
+
+.choice {
+  margin-top: 20px;
+}
+
+.choice button {
+  width: 80px;
+  margin: 10px;
+  padding: 15px;
+  font-size: 1.5rem;
+  border: 1px solid #111;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.choice button:hover {
+  background-color: #111;
+  color: #fff;
+}
