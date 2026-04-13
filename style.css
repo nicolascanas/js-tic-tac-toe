@@ -1,0 +1,42 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  color: #111;
+}
+
+.container {
+  text-align: center;
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 40px;
+  letter-spacing: 2px;
+}
+
+.menu button {
+  display: block;
+  width: 200px;
+  margin: 10px auto;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #111;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.menu button:hover {
+  background-color: #111;
+  color: #fff;
+}
