@@ -88,3 +88,18 @@ body {
   background-color: #111;
   color: #fff;
 }
+
+.reset-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  border: 1px solid #111;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reset-btn:hover {
+  background-color: #111;
+  color: #fff;
+}

@@ -65,7 +65,7 @@ function startGame() {
   currentPlayer = "X";
   gameActive = true;
   winningPattern = [];
-  renderBoard();
+  renderBoard(`Player ${currentPlayer}'s turn`);
 }
 
 function renderBoard(message = "") {
@@ -85,7 +85,12 @@ function renderBoard(message = "") {
         })
         .join("")}
     </div>
+
+    <button class="reset-btn" id="reset">Reset</button>
   `;
+
+  const resetBtn = document.getElementById("reset");
+  resetBtn.addEventListener("click", startGame);
 
   if (!gameActive) return;
 
