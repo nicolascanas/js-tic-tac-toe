@@ -46,6 +46,7 @@ function renderHome() {
 
 function renderDifficultySelection() {
   app.innerHTML = `
+    <button class="back-btn" id="back">Back</button>
     <h1 class="title">Select Difficulty</h1>
 
     <div class="menu">
@@ -53,59 +54,56 @@ function renderDifficultySelection() {
       <button id="medium">Medium</button>
       <button id="hard">Hard</button>
     </div>
-
-    <button class="back-btn" id="back">Back</button>
   `;
 
-  document.getElementById("back").addEventListener("click", renderHome);
+  document.getElementById("back").onclick = renderHome;
 
-  document.getElementById("easy").addEventListener("click", () => {
+  document.getElementById("easy").onclick = () => {
     difficulty = "easy";
     renderSymbolSelection();
-  });
+  };
 
-  document.getElementById("medium").addEventListener("click", () => {
+  document.getElementById("medium").onclick = () => {
     difficulty = "medium";
     renderSymbolSelection();
-  });
+  };
 
-  document.getElementById("hard").addEventListener("click", () => {
+  document.getElementById("hard").onclick = () => {
     difficulty = "hard";
     renderSymbolSelection();
-  });
+  };
 }
 
 function renderSymbolSelection() {
   app.innerHTML = `
+    <button class="back-btn" id="back">Back</button>
     <h1 class="title">Choose your symbol</h1>
 
     <div class="choice">
       <button id="choose-x">X</button>
       <button id="choose-o">O</button>
     </div>
-
-    <button class="back-btn" id="back">Back</button>
   `;
 
-  document.getElementById("back").addEventListener("click", () => {
+  document.getElementById("back").onclick = () => {
     if (selectedMode === "computer") {
       renderDifficultySelection();
     } else {
       renderHome();
     }
-  });
+  };
 
-  document.getElementById("choose-x").addEventListener("click", () => {
+  document.getElementById("choose-x").onclick = () => {
     playerSymbol = "X";
     computerSymbol = "O";
     startGame();
-  });
+  };
 
-  document.getElementById("choose-o").addEventListener("click", () => {
+  document.getElementById("choose-o").onclick = () => {
     playerSymbol = "O";
     computerSymbol = "X";
     startGame();
-  });
+  };
 }
 
 function startGame() {
@@ -114,57 +112,47 @@ function startGame() {
   gameActive = true;
   winningPattern = [];
 
-  renderBoard(`Player ${currentPlayer}'s turn`);
-
-  if (selectedMode === "computer" && currentPlayer === computerSymbol) {
-    setTimeout(computerMove, 400);
-  }
+  renderBoard();
 }
 
 function renderBoard(message = "") {
+  const winLine = getWinLine();
+
   app.innerHTML = `
+    <button class="back-btn" id="back">Back</button>
     <h1 class="title">Game Board</h1>
     <p>${message}</p>
 
     <div class="board">
       ${board
         .map((cell, index) => {
-          const isWinningCell = winningPattern.includes(index);
-          const isFilled = cell !== "";
-
-          let symbolClass = "";
-          if (cell === "X") symbolClass = "x";
-          if (cell === "O") symbolClass = "o";
-
+          let symbolClass = cell === "X" ? "x" : cell === "O" ? "o" : "";
           return `
-            <div class="cell ${isWinningCell ? "win" : ""} ${
-            isFilled ? "filled" : ""
-          } ${symbolClass}" data-index="${index}">
+            <div class="cell ${symbolClass}" data-index="${index}">
               ${cell}
             </div>
           `;
         })
         .join("")}
+
+      ${winLine}
     </div>
 
     <button class="reset-btn" id="reset">Reset</button>
-    <button class="back-btn" id="back">Back to Menu</button>
   `;
 
-  document.getElementById("reset").addEventListener("click", startGame);
-  document.getElementById("back").addEventListener("click", renderHome);
+  document.getElementById("back").onclick = renderHome;
+  document.getElementById("reset").onclick = startGame;
 
   if (!gameActive) return;
 
-  const cells = document.querySelectorAll(".cell");
-
-  cells.forEach(cell => {
-    cell.addEventListener("click", handleMove);
+  document.querySelectorAll(".cell").forEach(cell => {
+    cell.onclick = handleMove;
   });
 }
 
-function handleMove(event) {
-  const index = event.target.dataset.index;
+function handleMove(e) {
+  const index = e.target.dataset.index;
 
   if (board[index] !== "" || !gameActive) return;
 
@@ -176,11 +164,11 @@ function handleMove(event) {
 function makeMove(index) {
   board[index] = currentPlayer;
 
-  const winnerPattern = checkWinner();
+  const winner = checkWinner();
 
-  if (winnerPattern) {
+  if (winner) {
     gameActive = false;
-    winningPattern = winnerPattern;
+    winningPattern = winner;
     renderBoard(`Player ${currentPlayer} wins!`);
     return;
   }
@@ -192,8 +180,7 @@ function makeMove(index) {
   }
 
   currentPlayer = currentPlayer === "X" ? "O" : "X";
-
-  renderBoard(`Player ${currentPlayer}'s turn`);
+  renderBoard();
 
   if (selectedMode === "computer" && currentPlayer === computerSymbol) {
     setTimeout(computerMove, 400);
@@ -201,75 +188,84 @@ function makeMove(index) {
 }
 
 function computerMove() {
-  if (!gameActive) return;
-
-  let move = null;
-
-  if (difficulty === "easy") {
-    move = randomMove();
-  }
-
-  if (difficulty === "medium") {
-    move =
-      findBestMove(computerSymbol) ??
-      findBestMove(playerSymbol) ??
-      randomMove();
-  }
-
-  if (difficulty === "hard") {
-    move =
-      findBestMove(computerSymbol) ??
-      findBestMove(playerSymbol) ??
-      randomMove();
-  }
+  let move =
+    findBestMove(computerSymbol) ??
+    findBestMove(playerSymbol) ??
+    randomMove();
 
   makeMove(move);
 }
 
 function randomMove() {
-  const emptyCells = board
-    .map((cell, index) => (cell === "" ? index : null))
-    .filter(index => index !== null);
-
-  return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  const empty = board.map((v, i) => (v === "" ? i : null)).filter(v => v !== null);
+  return empty[Math.floor(Math.random() * empty.length)];
 }
 
 function findBestMove(symbol) {
-  for (let pattern of winPatterns) {
-    const [a, b, c] = pattern;
-    const values = [board[a], board[b], board[c]];
-
-    if (
-      values.filter(v => v === symbol).length === 2 &&
-      values.includes("")
-    ) {
+  for (let [a, b, c] of winPatterns) {
+    const vals = [board[a], board[b], board[c]];
+    if (vals.filter(v => v === symbol).length === 2 && vals.includes("")) {
       if (board[a] === "") return a;
       if (board[b] === "") return b;
       if (board[c] === "") return c;
     }
   }
-
   return null;
 }
 
 function checkWinner() {
   for (let pattern of winPatterns) {
     const [a, b, c] = pattern;
-
-    if (
-      board[a] &&
-      board[a] === board[b] &&
-      board[a] === board[c]
-    ) {
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
       return pattern;
     }
   }
-
   return null;
 }
 
-// navegação inicial
-document.addEventListener("click", (e) => {
+// linha visual
+function getWinLine() {
+  if (winningPattern.length === 0) return "";
+
+  const [a, b, c] = winningPattern;
+
+  const positions = [
+    [0, 1, 2, "horizontal", 0],
+    [3, 4, 5, "horizontal", 1],
+    [6, 7, 8, "horizontal", 2],
+    [0, 3, 6, "vertical", 0],
+    [1, 4, 7, "vertical", 1],
+    [2, 5, 8, "vertical", 2],
+    [0, 4, 8, "diag1"],
+    [2, 4, 6, "diag2"]
+  ];
+
+  const match = positions.find(p => p[0] === a && p[1] === b && p[2] === c);
+  if (!match) return "";
+
+  const colorClass = currentPlayer === "X" ? "x" : "o";
+
+  if (match[3] === "horizontal") {
+    return `<div class="win-line ${colorClass}" style="top:${match[4] * 33.3 + 16.6}%; left:0; width:100%;"></div>`;
+  }
+
+  if (match[3] === "vertical") {
+    return `<div class="win-line ${colorClass}" style="left:${match[4] * 33.3 + 16.6}%; top:0; width:100%; transform: rotate(90deg);"></div>`;
+  }
+
+  if (match[3] === "diag1") {
+    return `<div class="win-line ${colorClass}" style="top:50%; left:0; width:140%; transform: rotate(45deg);"></div>`;
+  }
+
+  if (match[3] === "diag2") {
+    return `<div class="win-line ${colorClass}" style="top:50%; left:0; width:140%; transform: rotate(-45deg);"></div>`;
+  }
+
+  return "";
+}
+
+// navegação
+document.addEventListener("click", e => {
   if (e.target.id === "vs-computer") {
     selectedMode = "computer";
     renderDifficultySelection();
@@ -281,5 +277,4 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// inicialização
 renderHome();

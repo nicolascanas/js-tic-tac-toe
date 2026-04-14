@@ -16,6 +16,7 @@ body {
 }
 
 .container {
+  position: relative;
   text-align: center;
   width: 100%;
   max-width: 400px;
@@ -28,10 +29,28 @@ body {
   letter-spacing: 1.5px;
 }
 
+/* BACK BUTTON (top-left) */
+.back-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  border: 1px solid #333;
+  background: transparent;
+  color: #f5f5f5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background-color: #f5f5f5;
+  color: #0d0d0d;
+}
+
 /* BOTÕES */
 .menu button,
-.reset-btn,
-.back-btn {
+.reset-btn {
   display: block;
   width: 100%;
   margin: 10px 0;
@@ -41,64 +60,44 @@ body {
   background: transparent;
   color: #f5f5f5;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
 }
 
 .menu button:hover,
-.reset-btn:hover,
-.back-btn:hover {
+.reset-btn:hover {
   background-color: #f5f5f5;
   color: #0d0d0d;
 }
 
-.menu button:active,
-.reset-btn:active,
-.back-btn:active {
-  transform: scale(0.97);
-}
-
-/* ESCOLHA X/O */
+/* ESCOLHA */
 .choice {
   display: flex;
   justify-content: center;
   gap: 15px;
-  margin-top: 20px;
 }
 
 .choice button {
   flex: 1;
-  max-width: 100px;
   padding: 18px;
   font-size: 2rem;
   border: 1px solid #333;
   background: transparent;
   cursor: pointer;
-  transition: all 0.25s ease;
 }
 
-/* CORES DOS SÍMBOLOS */
-.choice #choose-x {
+#choose-x {
   color: #00c853;
   border-color: #00c853;
 }
 
-.choice #choose-o {
+#choose-o {
   color: #ff3b30;
   border-color: #ff3b30;
 }
 
-.choice #choose-x:hover {
-  background-color: #00c853;
-  color: #0d0d0d;
-}
-
-.choice #choose-o:hover {
-  background-color: #ff3b30;
-  color: #0d0d0d;
-}
-
 /* BOARD */
 .board {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
@@ -113,45 +112,14 @@ body {
   justify-content: center;
   font-size: clamp(2rem, 6vw, 2.8rem);
   cursor: pointer;
-  transition: all 0.2s ease;
-  animation: popIn 0.2s ease;
 }
 
-.cell:hover {
-  background-color: #1a1a1a;
-}
-
+/* remover efeito "elástico" */
 .cell:active {
-  transform: scale(0.92);
+  transform: none;
 }
 
-/* X e O no tabuleiro */
-.cell.filled {
-  animation: popSymbol 0.2s ease;
-}
-
-.cell.filled:has(:not(*)) {
-  /* fallback safety */
-}
-
-.cell[data-index] {
-  color: inherit;
-}
-
-/* aplicar cor dinâmica */
-.cell.filled {
-  color: #f5f5f5;
-}
-
-.cell.filled:contains("X") {
-  color: #00c853;
-}
-
-.cell.filled:contains("O") {
-  color: #ff3b30;
-}
-
-/* alternativa segura (JS aplica classe depois) */
+/* cores */
 .cell.x {
   color: #00c853;
 }
@@ -160,28 +128,29 @@ body {
   color: #ff3b30;
 }
 
-/* VITÓRIA */
-.cell.win {
-  background-color: #f5f5f5;
-  color: #0d0d0d;
-  animation: winPulse 0.4s ease infinite alternate;
+/* linha de vitória */
+.win-line {
+  position: absolute;
+  height: 2px;
+  background-color: white;
+  transform-origin: left center;
 }
 
-/* TEXTO */
-p {
-  font-size: 0.95rem;
-  opacity: 0.7;
+/* cores dinâmicas */
+.win-line.x {
+  background-color: #00c853;
 }
 
-/* DESKTOP */
-@media (min-width: 600px) {
-  .title {
-    font-size: 3rem;
-  }
+.win-line.o {
+  background-color: #ff3b30;
 }
 
-/* ANIMAÇÕES */
+/* animação suave */
+.win-line {
+  animation: drawLine 0.3s ease forwards;
+}
 
+/* animações */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -193,33 +162,11 @@ p {
   }
 }
 
-@keyframes popIn {
+@keyframes drawLine {
   from {
-    transform: scale(0.95);
-    opacity: 0;
+    transform: scaleX(0);
   }
   to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes popSymbol {
-  from {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes winPulse {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.05);
+    transform: scaleX(1);
   }
 }
