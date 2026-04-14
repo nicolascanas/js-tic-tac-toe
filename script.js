@@ -2,6 +2,7 @@ const app = document.getElementById("app");
 
 let selectedMode = null;
 let playerSymbol = null;
+let computerSymbol = null;
 let currentPlayer = "X";
 let board = Array(9).fill("");
 let gameActive = true;
@@ -51,11 +52,13 @@ function renderSymbolSelection() {
 
   document.getElementById("choose-x").addEventListener("click", () => {
     playerSymbol = "X";
+    computerSymbol = "O";
     startGame();
   });
 
   document.getElementById("choose-o").addEventListener("click", () => {
     playerSymbol = "O";
+    computerSymbol = "X";
     startGame();
   });
 }
@@ -66,6 +69,11 @@ function startGame() {
   gameActive = true;
   winningPattern = [];
   renderBoard(`Player ${currentPlayer}'s turn`);
+
+  // IA começa se for o turno dela
+  if (selectedMode === "computer" && currentPlayer === computerSymbol) {
+    setTimeout(computerMove, 500);
+  }
 }
 
 function renderBoard(message = "") {
@@ -89,8 +97,7 @@ function renderBoard(message = "") {
     <button class="reset-btn" id="reset">Reset</button>
   `;
 
-  const resetBtn = document.getElementById("reset");
-  resetBtn.addEventListener("click", startGame);
+  document.getElementById("reset").addEventListener("click", startGame);
 
   if (!gameActive) return;
 
@@ -106,6 +113,13 @@ function handleMove(event) {
 
   if (board[index] !== "" || !gameActive) return;
 
+  // impede clique durante turno da IA
+  if (selectedMode === "computer" && currentPlayer === computerSymbol) return;
+
+  makeMove(index);
+}
+
+function makeMove(index) {
   board[index] = currentPlayer;
 
   const winnerPattern = checkWinner();
@@ -126,6 +140,23 @@ function handleMove(event) {
   currentPlayer = currentPlayer === "X" ? "O" : "X";
 
   renderBoard(`Player ${currentPlayer}'s turn`);
+
+  if (selectedMode === "computer" && currentPlayer === computerSymbol) {
+    setTimeout(computerMove, 500);
+  }
+}
+
+function computerMove() {
+  if (!gameActive) return;
+
+  const emptyCells = board
+    .map((cell, index) => (cell === "" ? index : null))
+    .filter(index => index !== null);
+
+  const randomIndex =
+    emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+  makeMove(randomIndex);
 }
 
 function checkWinner() {
