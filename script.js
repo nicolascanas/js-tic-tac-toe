@@ -163,17 +163,43 @@ function makeMove(index) {
   }
 }
 
+// IA melhorada (ganhar > bloquear > aleatório)
 function computerMove() {
   if (!gameActive) return;
 
-  const emptyCells = board
-    .map((cell, index) => (cell === "" ? index : null))
-    .filter(index => index !== null);
+  let move = findBestMove(computerSymbol);
 
-  const randomIndex =
-    emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  if (move === null) {
+    move = findBestMove(playerSymbol);
+  }
 
-  makeMove(randomIndex);
+  if (move === null) {
+    const emptyCells = board
+      .map((cell, index) => (cell === "" ? index : null))
+      .filter(index => index !== null);
+
+    move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  }
+
+  makeMove(move);
+}
+
+function findBestMove(symbol) {
+  for (let pattern of winPatterns) {
+    const [a, b, c] = pattern;
+    const values = [board[a], board[b], board[c]];
+
+    if (
+      values.filter(v => v === symbol).length === 2 &&
+      values.includes("")
+    ) {
+      if (board[a] === "") return a;
+      if (board[b] === "") return b;
+      if (board[c] === "") return c;
+    }
+  }
+
+  return null;
 }
 
 function checkWinner() {
