@@ -6,32 +6,36 @@
 }
 
 body {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
   color: #111;
+  padding: 20px;
 }
 
 .container {
   text-align: center;
+  width: 100%;
+  max-width: 400px;
   animation: fadeIn 0.4s ease;
 }
 
 .title {
-  font-size: 3rem;
-  margin-bottom: 30px;
-  letter-spacing: 2px;
+  font-size: 2.2rem;
+  margin-bottom: 25px;
+  letter-spacing: 1.5px;
 }
 
+/* BOTÕES */
 .menu button,
 .reset-btn,
 .back-btn {
   display: block;
-  width: 200px;
-  margin: 10px auto;
-  padding: 12px;
+  width: 100%;
+  margin: 10px 0;
+  padding: 14px;
   font-size: 1rem;
   border: 1px solid #111;
   background: transparent;
@@ -44,7 +48,6 @@ body {
 .back-btn:hover {
   background-color: #111;
   color: #fff;
-  transform: translateY(-2px);
 }
 
 .menu button:active,
@@ -53,16 +56,19 @@ body {
   transform: scale(0.97);
 }
 
-/* Escolha X/O */
+/* ESCOLHA X/O */
 .choice {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
   margin-top: 20px;
 }
 
 .choice button {
-  width: 80px;
-  margin: 10px;
-  padding: 15px;
-  font-size: 1.5rem;
+  flex: 1;
+  max-width: 100px;
+  padding: 18px;
+  font-size: 1.8rem;
   border: 1px solid #111;
   background: transparent;
   cursor: pointer;
@@ -72,25 +78,23 @@ body {
 .choice button:hover {
   background-color: #111;
   color: #fff;
-  transform: translateY(-2px);
 }
 
-/* Board */
+/* BOARD RESPONSIVO */
 .board {
   display: grid;
-  grid-template-columns: repeat(3, 100px);
-  grid-template-rows: repeat(3, 100px);
+  grid-template-columns: repeat(3, 1fr);
   gap: 6px;
-  justify-content: center;
-  margin: 30px 0;
+  margin: 25px 0;
 }
 
 .cell {
+  aspect-ratio: 1 / 1;
   border: 1px solid #111;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: clamp(1.8rem, 6vw, 2.5rem);
   cursor: pointer;
   transition: all 0.2s ease;
   animation: popIn 0.2s ease;
@@ -104,23 +108,31 @@ body {
   transform: scale(0.92);
 }
 
-/* Animação do símbolo */
 .cell.filled {
   animation: popSymbol 0.2s ease;
 }
 
-/* Vitória */
 .cell.win {
   background-color: #111;
   color: #fff;
   animation: winPulse 0.4s ease infinite alternate;
 }
 
-/* Texto de status */
+/* TEXTO */
 p {
-  margin-top: 10px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   opacity: 0.8;
+}
+
+/* ===== DESKTOP AJUSTES ===== */
+@media (min-width: 600px) {
+  .title {
+    font-size: 3rem;
+  }
+
+  .container {
+    max-width: 420px;
+  }
 }
 
 /* ===== ANIMAÇÕES ===== */
