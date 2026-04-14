@@ -19,7 +19,19 @@ const winPatterns = [
   [2, 4, 6]
 ];
 
+function resetState() {
+  selectedMode = null;
+  playerSymbol = null;
+  computerSymbol = null;
+  currentPlayer = "X";
+  board = Array(9).fill("");
+  gameActive = true;
+  winningPattern = [];
+}
+
 function renderHome() {
+  resetState();
+
   app.innerHTML = `
     <h1 class="title">Tic-Tac-Toe</h1>
 
@@ -48,7 +60,11 @@ function renderSymbolSelection() {
       <button id="choose-x">X</button>
       <button id="choose-o">O</button>
     </div>
+
+    <button class="back-btn" id="back">Back</button>
   `;
+
+  document.getElementById("back").addEventListener("click", renderHome);
 
   document.getElementById("choose-x").addEventListener("click", () => {
     playerSymbol = "X";
@@ -68,9 +84,9 @@ function startGame() {
   currentPlayer = "X";
   gameActive = true;
   winningPattern = [];
+
   renderBoard(`Player ${currentPlayer}'s turn`);
 
-  // IA começa se for o turno dela
   if (selectedMode === "computer" && currentPlayer === computerSymbol) {
     setTimeout(computerMove, 500);
   }
@@ -95,9 +111,11 @@ function renderBoard(message = "") {
     </div>
 
     <button class="reset-btn" id="reset">Reset</button>
+    <button class="back-btn" id="back">Back to Menu</button>
   `;
 
   document.getElementById("reset").addEventListener("click", startGame);
+  document.getElementById("back").addEventListener("click", renderHome);
 
   if (!gameActive) return;
 
@@ -113,7 +131,6 @@ function handleMove(event) {
 
   if (board[index] !== "" || !gameActive) return;
 
-  // impede clique durante turno da IA
   if (selectedMode === "computer" && currentPlayer === computerSymbol) return;
 
   makeMove(index);
