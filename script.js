@@ -1,6 +1,7 @@
 const app = document.getElementById("app");
 
 let selectedMode = null;
+let difficulty = null;
 let playerSymbol = null;
 let computerSymbol = null;
 let currentPlayer = "X";
@@ -21,6 +22,7 @@ const winPatterns = [
 
 function resetState() {
   selectedMode = null;
+  difficulty = null;
   playerSymbol = null;
   computerSymbol = null;
   currentPlayer = "X";
@@ -42,6 +44,38 @@ function renderHome() {
   `;
 }
 
+// NOVA TELA
+function renderDifficultySelection() {
+  app.innerHTML = `
+    <h1 class="title">Select Difficulty</h1>
+
+    <div class="menu">
+      <button id="easy">Easy</button>
+      <button id="medium">Medium</button>
+      <button id="hard">Hard</button>
+    </div>
+
+    <button class="back-btn" id="back">Back</button>
+  `;
+
+  document.getElementById("back").addEventListener("click", renderHome);
+
+  document.getElementById("easy").addEventListener("click", () => {
+    difficulty = "easy";
+    renderSymbolSelection();
+  });
+
+  document.getElementById("medium").addEventListener("click", () => {
+    difficulty = "medium";
+    renderSymbolSelection();
+  });
+
+  document.getElementById("hard").addEventListener("click", () => {
+    difficulty = "hard";
+    renderSymbolSelection();
+  });
+}
+
 function renderSymbolSelection() {
   app.innerHTML = `
     <h1 class="title">Choose your symbol</h1>
@@ -54,7 +88,13 @@ function renderSymbolSelection() {
     <button class="back-btn" id="back">Back</button>
   `;
 
-  document.getElementById("back").addEventListener("click", renderHome);
+  document.getElementById("back").addEventListener("click", () => {
+    if (selectedMode === "computer") {
+      renderDifficultySelection();
+    } else {
+      renderHome();
+    }
+  });
 
   document.getElementById("choose-x").addEventListener("click", () => {
     playerSymbol = "X";
@@ -157,24 +197,33 @@ function makeMove(index) {
   }
 }
 
+// IA baseada em dificuldade
 function computerMove() {
   if (!gameActive) return;
 
-  let move = findBestMove(computerSymbol);
+  let move = null;
 
-  if (move === null) {
-    move = findBestMove(playerSymbol);
+  if (difficulty === "easy") {
+    move = randomMove();
   }
 
-  if (move === null) {
-    const emptyCells = board
-      .map((cell, index) => (cell === "" ? index : null))
-      .filter(index => index !== null);
+  if (difficulty === "medium") {
+    move = findBestMove(computerSymbol) ?? findBestMove(playerSymbol) ?? randomMove();
+  }
 
-    move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  if (difficulty === "hard") {
+    move = findBestMove(computerSymbol) ?? findBestMove(playerSymbol) ?? randomMove();
   }
 
   makeMove(move);
+}
+
+function randomMove() {
+  const emptyCells = board
+    .map((cell, index) => (cell === "" ? index : null))
+    .filter(index => index !== null);
+
+  return emptyCells[Math.floor(Math.random() * emptyCells.length)];
 }
 
 function findBestMove(symbol) {
@@ -211,11 +260,11 @@ function checkWinner() {
   return null;
 }
 
-// eventos iniciais
+// navegação inicial
 document.addEventListener("click", (e) => {
   if (e.target.id === "vs-computer") {
     selectedMode = "computer";
-    renderSymbolSelection();
+    renderDifficultySelection();
   }
 
   if (e.target.id === "vs-player") {
