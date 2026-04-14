@@ -2,6 +2,8 @@ const app = document.getElementById("app");
 
 let selectedMode = null;
 let playerSymbol = null;
+let currentPlayer = "X";
+let board = Array(9).fill("");
 
 function renderHome() {
   app.innerHTML = `
@@ -36,13 +38,19 @@ function renderSymbolSelection() {
 
   document.getElementById("choose-x").addEventListener("click", () => {
     playerSymbol = "X";
-    renderBoard();
+    startGame();
   });
 
   document.getElementById("choose-o").addEventListener("click", () => {
     playerSymbol = "O";
-    renderBoard();
+    startGame();
   });
+}
+
+function startGame() {
+  board = Array(9).fill("");
+  currentPlayer = "X";
+  renderBoard();
 }
 
 function renderBoard() {
@@ -50,9 +58,12 @@ function renderBoard() {
     <h1 class="title">Game Board</h1>
 
     <div class="board">
-      ${Array(9)
-        .fill("")
-        .map((_, index) => `<div class="cell" data-index="${index}"></div>`)
+      ${board
+        .map((cell, index) => `
+          <div class="cell" data-index="${index}">
+            ${cell}
+          </div>
+        `)
         .join("")}
     </div>
   `;
@@ -60,10 +71,24 @@ function renderBoard() {
   const cells = document.querySelectorAll(".cell");
 
   cells.forEach(cell => {
-    cell.addEventListener("click", () => {
-      console.log("Clicked cell:", cell.dataset.index);
-    });
+    cell.addEventListener("click", handleMove);
   });
+}
+
+function handleMove(event) {
+  const index = event.target.dataset.index;
+
+  // impede sobrescrever jogada
+  if (board[index] !== "") return;
+
+  // registra jogada
+  board[index] = currentPlayer;
+
+  // alterna jogador
+  currentPlayer = currentPlayer === "X" ? "O" : "X";
+
+  // re-renderiza tabuleiro
+  renderBoard();
 }
 
 // inicialização
