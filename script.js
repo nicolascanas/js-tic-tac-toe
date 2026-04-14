@@ -5,6 +5,7 @@ let playerSymbol = null;
 let currentPlayer = "X";
 let board = Array(9).fill("");
 let gameActive = true;
+let winningPattern = [];
 
 const winPatterns = [
   [0, 1, 2],
@@ -63,6 +64,7 @@ function startGame() {
   board = Array(9).fill("");
   currentPlayer = "X";
   gameActive = true;
+  winningPattern = [];
   renderBoard();
 }
 
@@ -73,11 +75,14 @@ function renderBoard(message = "") {
 
     <div class="board">
       ${board
-        .map((cell, index) => `
-          <div class="cell" data-index="${index}">
-            ${cell}
-          </div>
-        `)
+        .map((cell, index) => {
+          const isWinningCell = winningPattern.includes(index);
+          return `
+            <div class="cell ${isWinningCell ? "win" : ""}" data-index="${index}">
+              ${cell}
+            </div>
+          `;
+        })
         .join("")}
     </div>
   `;
@@ -98,8 +103,11 @@ function handleMove(event) {
 
   board[index] = currentPlayer;
 
-  if (checkWinner()) {
+  const winnerPattern = checkWinner();
+
+  if (winnerPattern) {
     gameActive = false;
+    winningPattern = winnerPattern;
     renderBoard(`Player ${currentPlayer} wins!`);
     return;
   }
@@ -116,14 +124,19 @@ function handleMove(event) {
 }
 
 function checkWinner() {
-  return winPatterns.some(pattern => {
+  for (let pattern of winPatterns) {
     const [a, b, c] = pattern;
-    return (
+
+    if (
       board[a] &&
       board[a] === board[b] &&
       board[a] === board[c]
-    );
-  });
+    ) {
+      return pattern;
+    }
+  }
+
+  return null;
 }
 
 // inicialização
