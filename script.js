@@ -44,7 +44,6 @@ function renderHome() {
   `;
 }
 
-// NOVA TELA
 function renderDifficultySelection() {
   app.innerHTML = `
     <h1 class="title">Select Difficulty</h1>
@@ -133,10 +132,14 @@ function renderBoard(message = "") {
           const isWinningCell = winningPattern.includes(index);
           const isFilled = cell !== "";
 
+          let symbolClass = "";
+          if (cell === "X") symbolClass = "x";
+          if (cell === "O") symbolClass = "o";
+
           return `
             <div class="cell ${isWinningCell ? "win" : ""} ${
             isFilled ? "filled" : ""
-          }" data-index="${index}">
+          } ${symbolClass}" data-index="${index}">
               ${cell}
             </div>
           `;
@@ -197,7 +200,6 @@ function makeMove(index) {
   }
 }
 
-// IA baseada em dificuldade
 function computerMove() {
   if (!gameActive) return;
 
@@ -208,11 +210,17 @@ function computerMove() {
   }
 
   if (difficulty === "medium") {
-    move = findBestMove(computerSymbol) ?? findBestMove(playerSymbol) ?? randomMove();
+    move =
+      findBestMove(computerSymbol) ??
+      findBestMove(playerSymbol) ??
+      randomMove();
   }
 
   if (difficulty === "hard") {
-    move = findBestMove(computerSymbol) ?? findBestMove(playerSymbol) ?? randomMove();
+    move =
+      findBestMove(computerSymbol) ??
+      findBestMove(playerSymbol) ??
+      randomMove();
   }
 
   makeMove(move);
