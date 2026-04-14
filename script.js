@@ -4,6 +4,18 @@ let selectedMode = null;
 let playerSymbol = null;
 let currentPlayer = "X";
 let board = Array(9).fill("");
+let gameActive = true;
+
+const winPatterns = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
 
 function renderHome() {
   app.innerHTML = `
@@ -50,12 +62,14 @@ function renderSymbolSelection() {
 function startGame() {
   board = Array(9).fill("");
   currentPlayer = "X";
+  gameActive = true;
   renderBoard();
 }
 
-function renderBoard() {
+function renderBoard(message = "") {
   app.innerHTML = `
     <h1 class="title">Game Board</h1>
+    <p>${message}</p>
 
     <div class="board">
       ${board
@@ -68,6 +82,8 @@ function renderBoard() {
     </div>
   `;
 
+  if (!gameActive) return;
+
   const cells = document.querySelectorAll(".cell");
 
   cells.forEach(cell => {
@@ -78,17 +94,36 @@ function renderBoard() {
 function handleMove(event) {
   const index = event.target.dataset.index;
 
-  // impede sobrescrever jogada
-  if (board[index] !== "") return;
+  if (board[index] !== "" || !gameActive) return;
 
-  // registra jogada
   board[index] = currentPlayer;
 
-  // alterna jogador
+  if (checkWinner()) {
+    gameActive = false;
+    renderBoard(`Player ${currentPlayer} wins!`);
+    return;
+  }
+
+  if (board.every(cell => cell !== "")) {
+    gameActive = false;
+    renderBoard("It's a draw!");
+    return;
+  }
+
   currentPlayer = currentPlayer === "X" ? "O" : "X";
 
-  // re-renderiza tabuleiro
-  renderBoard();
+  renderBoard(`Player ${currentPlayer}'s turn`);
+}
+
+function checkWinner() {
+  return winPatterns.some(pattern => {
+    const [a, b, c] = pattern;
+    return (
+      board[a] &&
+      board[a] === board[b] &&
+      board[a] === board[c]
+    );
+  });
 }
 
 // inicialização
