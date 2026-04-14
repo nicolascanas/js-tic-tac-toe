@@ -7,46 +7,48 @@
 
 body {
   min-height: 100vh;
+  background-color: #0d0d0d;
+  color: #f5f5f5;
+}
+
+/* NOVO: layout central */
+.container {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #0d0d0d;
-  color: #f5f5f5;
-  padding: 20px;
 }
 
-.container {
-  position: relative;
+.inner {
   text-align: center;
   width: 100%;
   max-width: 400px;
-  animation: fadeIn 0.4s ease;
 }
 
-.title {
-  font-size: 2.2rem;
-  margin-bottom: 25px;
-  letter-spacing: 1.5px;
-}
-
-/* BACK BUTTON (top-left) */
+/* BACK GLOBAL (fora do container) */
 .back-btn {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 8px 12px;
-  font-size: 0.8rem;
-  border: 1px solid #333;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-size: 0.9rem;
+  border: none;
   background: transparent;
   color: #f5f5f5;
   cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 10;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+  z-index: 100;
 }
 
 .back-btn:hover {
-  background-color: #f5f5f5;
-  color: #0d0d0d;
+  opacity: 1;
+}
+
+/* TÍTULO */
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
 }
 
 /* BOTÕES */
@@ -73,7 +75,6 @@ body {
 /* ESCOLHA */
 .choice {
   display: flex;
-  justify-content: center;
   gap: 15px;
 }
 
@@ -86,7 +87,7 @@ body {
   cursor: pointer;
 }
 
-/* CORES DOS BOTÕES */
+/* CORES */
 #choose-x {
   color: #00c853;
   border-color: #00c853;
@@ -95,16 +96,6 @@ body {
 #choose-o {
   color: #ff3b30;
   border-color: #ff3b30;
-}
-
-#choose-x:hover {
-  background-color: #00c853;
-  color: #0d0d0d;
-}
-
-#choose-o:hover {
-  background-color: #ff3b30;
-  color: #0d0d0d;
 }
 
 /* BOARD */
@@ -127,12 +118,11 @@ body {
   cursor: pointer;
 }
 
-/* remover efeito de clique */
 .cell:active {
   transform: none;
 }
 
-/* CORES DOS SÍMBOLOS */
+/* CORES */
 .cell.x {
   color: #00c853;
 }
@@ -141,7 +131,7 @@ body {
   color: #ff3b30;
 }
 
-/* LINHA DE VITÓRIA (FIX FINAL) */
+/* LINHA */
 .win-line {
   position: absolute;
   height: 3px;
@@ -150,7 +140,6 @@ body {
   z-index: 5;
 }
 
-/* CORES DINÂMICAS */
 .win-line.x {
   background-color: #00c853;
 }
@@ -163,23 +152,4 @@ body {
 p {
   font-size: 0.95rem;
   opacity: 0.7;
-}
-
-/* RESPONSIVO */
-@media (min-width: 600px) {
-  .title {
-    font-size: 3rem;
-  }
-}
-
-/* ANIMAÇÕES */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }

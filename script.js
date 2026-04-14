@@ -15,61 +15,68 @@ const winPatterns = [
   [0,4,8],[2,4,6]
 ];
 
-function resetState() {
-  selectedMode = null;
-  difficulty = null;
-  playerSymbol = null;
-  computerSymbol = null;
-  currentPlayer = "X";
-  board = Array(9).fill("");
-  gameActive = true;
-  winningPattern = [];
+function renderLayout(content, showBack = false, backAction = null) {
+  app.innerHTML = `
+    ${showBack ? `<button class="back-btn" id="back">Back</button>` : ""}
+    <div class="container">
+      <div class="inner">
+        ${content}
+      </div>
+    </div>
+  `;
+
+  if (showBack && backAction) {
+    document.getElementById("back").onclick = backAction;
+  }
 }
 
 function renderHome() {
-  resetState();
+  selectedMode = null;
 
-  app.innerHTML = `
+  renderLayout(`
     <h1 class="title">Tic-Tac-Toe</h1>
     <div class="menu">
       <button id="vs-computer">Vs Computer</button>
       <button id="vs-player">2 Players</button>
     </div>
-  `;
+  `);
+
+  document.getElementById("vs-computer").onclick = () => {
+    selectedMode = "computer";
+    renderDifficultySelection();
+  };
+
+  document.getElementById("vs-player").onclick = () => {
+    selectedMode = "player";
+    renderSymbolSelection();
+  };
 }
 
 function renderDifficultySelection() {
-  app.innerHTML = `
-    <button class="back-btn" id="back">Back</button>
+  renderLayout(`
     <h1 class="title">Select Difficulty</h1>
-
     <div class="menu">
       <button id="easy">Easy</button>
       <button id="medium">Medium</button>
       <button id="hard">Hard</button>
     </div>
-  `;
+  `, true, renderHome);
 
-  document.getElementById("back").onclick = renderHome;
   document.getElementById("easy").onclick = () => { difficulty="easy"; renderSymbolSelection(); };
   document.getElementById("medium").onclick = () => { difficulty="medium"; renderSymbolSelection(); };
   document.getElementById("hard").onclick = () => { difficulty="hard"; renderSymbolSelection(); };
 }
 
 function renderSymbolSelection() {
-  app.innerHTML = `
-    <button class="back-btn" id="back">Back</button>
+  renderLayout(`
     <h1 class="title">Choose your symbol</h1>
-
     <div class="choice">
       <button id="choose-x">X</button>
       <button id="choose-o">O</button>
     </div>
-  `;
-
-  document.getElementById("back").onclick = () => {
+  `, true, () => {
     selectedMode === "computer" ? renderDifficultySelection() : renderHome();
-  };
+  });
 
   document.getElementById("choose-x").onclick = () => {
     playerSymbol="X"; computerSymbol="O"; startGame();
@@ -90,22 +97,20 @@ function startGame() {
 }
 
 function renderBoard(message="") {
-  app.innerHTML = `
-    <button class="back-btn" id="back">Back</button>
+  renderLayout(`
     <h1 class="title">Game Board</h1>
     <p>${message}</p>
 
     <div class="board" id="board">
-      ${board.map((cell, i)=>{
+      ${board.map((cell,i)=>{
         const cls = cell==="X"?"x":cell==="O"?"o":"";
         return `<div class="cell ${cls}" data-index="${i}">${cell}</div>`;
       }).join("")}
     </div>
 
     <button class="reset-btn" id="reset">Reset</button>
-  `;
+  `, true, renderHome);
 
-  document.getElementById("back").onclick = renderHome;
   document.getElementById("reset").onclick = startGame;
 
   if (!gameActive) return;
@@ -128,10 +133,7 @@ function makeMove(i) {
     gameActive=false;
     winningPattern=win;
     renderBoard(`Player ${currentPlayer} wins!`);
-
-    // 🔥 desenhar linha após render
     setTimeout(drawWinLine, 50);
-
     return;
   }
 
@@ -183,7 +185,6 @@ function checkWinner() {
   return null;
 }
 
-// 🎯 NOVA IMPLEMENTAÇÃO PERFEITA
 function drawWinLine() {
   const boardEl = document.getElementById("board");
   const cells = document.querySelectorAll(".cell");
@@ -192,17 +193,17 @@ function drawWinLine() {
   const last = cells[winningPattern[2]].getBoundingClientRect();
   const boardRect = boardEl.getBoundingClientRect();
 
-  const x1 = first.left + first.width / 2 - boardRect.left;
-  const y1 = first.top + first.height / 2 - boardRect.top;
+  const x1 = first.left + first.width/2 - boardRect.left;
+  const y1 = first.top + first.height/2 - boardRect.top;
 
-  const x2 = last.left + last.width / 2 - boardRect.left;
-  const y2 = last.top + last.height / 2 - boardRect.top;
+  const x2 = last.left + last.width/2 - boardRect.left;
+  const y2 = last.top + last.height/2 - boardRect.top;
 
-  const length = Math.hypot(x2 - x1, y2 - y1);
-  const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+  const length = Math.hypot(x2-x1, y2-y1);
+  const angle = Math.atan2(y2-y1, x2-x1) * 180/Math.PI;
 
   const line = document.createElement("div");
-  line.className = "win-line " + (currentPlayer === "X" ? "x" : "o");
+  line.className = "win-line " + (currentPlayer==="X"?"x":"o");
 
   line.style.width = `${length}px`;
   line.style.left = `${x1}px`;
@@ -212,17 +213,5 @@ function drawWinLine() {
 
   boardEl.appendChild(line);
 }
-
-// navegação
-document.addEventListener("click", e=>{
-  if (e.target.id==="vs-computer") {
-    selectedMode="computer";
-    renderDifficultySelection();
-  }
-  if (e.target.id==="vs-player") {
-    selectedMode="player";
-    renderSymbolSelection();
-  }
-});
 
 renderHome();
