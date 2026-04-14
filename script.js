@@ -40,16 +40,6 @@ function renderHome() {
       <button id="vs-player">2 Players</button>
     </div>
   `;
-
-  document.getElementById("vs-computer").addEventListener("click", () => {
-    selectedMode = "computer";
-    renderSymbolSelection();
-  });
-
-  document.getElementById("vs-player").addEventListener("click", () => {
-    selectedMode = "player";
-    renderSymbolSelection();
-  });
 }
 
 function renderSymbolSelection() {
@@ -88,7 +78,7 @@ function startGame() {
   renderBoard(`Player ${currentPlayer}'s turn`);
 
   if (selectedMode === "computer" && currentPlayer === computerSymbol) {
-    setTimeout(computerMove, 500);
+    setTimeout(computerMove, 400);
   }
 }
 
@@ -101,8 +91,12 @@ function renderBoard(message = "") {
       ${board
         .map((cell, index) => {
           const isWinningCell = winningPattern.includes(index);
+          const isFilled = cell !== "";
+
           return `
-            <div class="cell ${isWinningCell ? "win" : ""}" data-index="${index}">
+            <div class="cell ${isWinningCell ? "win" : ""} ${
+            isFilled ? "filled" : ""
+          }" data-index="${index}">
               ${cell}
             </div>
           `;
@@ -159,11 +153,10 @@ function makeMove(index) {
   renderBoard(`Player ${currentPlayer}'s turn`);
 
   if (selectedMode === "computer" && currentPlayer === computerSymbol) {
-    setTimeout(computerMove, 500);
+    setTimeout(computerMove, 400);
   }
 }
 
-// IA melhorada (ganhar > bloquear > aleatório)
 function computerMove() {
   if (!gameActive) return;
 
@@ -217,6 +210,19 @@ function checkWinner() {
 
   return null;
 }
+
+// eventos iniciais
+document.addEventListener("click", (e) => {
+  if (e.target.id === "vs-computer") {
+    selectedMode = "computer";
+    renderSymbolSelection();
+  }
+
+  if (e.target.id === "vs-player") {
+    selectedMode = "player";
+    renderSymbolSelection();
+  }
+});
 
 // inicialização
 renderHome();

@@ -16,15 +16,18 @@ body {
 
 .container {
   text-align: center;
+  animation: fadeIn 0.4s ease;
 }
 
 .title {
   font-size: 3rem;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   letter-spacing: 2px;
 }
 
-.menu button {
+.menu button,
+.reset-btn,
+.back-btn {
   display: block;
   width: 200px;
   margin: 10px auto;
@@ -33,14 +36,24 @@ body {
   border: 1px solid #111;
   background: transparent;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
-.menu button:hover {
+.menu button:hover,
+.reset-btn:hover,
+.back-btn:hover {
   background-color: #111;
   color: #fff;
+  transform: translateY(-2px);
 }
 
+.menu button:active,
+.reset-btn:active,
+.back-btn:active {
+  transform: scale(0.97);
+}
+
+/* Escolha X/O */
 .choice {
   margin-top: 20px;
 }
@@ -53,21 +66,23 @@ body {
   border: 1px solid #111;
   background: transparent;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .choice button:hover {
   background-color: #111;
   color: #fff;
+  transform: translateY(-2px);
 }
 
+/* Board */
 .board {
   display: grid;
   grid-template-columns: repeat(3, 100px);
   grid-template-rows: repeat(3, 100px);
-  gap: 5px;
+  gap: 6px;
   justify-content: center;
-  margin-top: 30px;
+  margin: 30px 0;
 }
 
 .cell {
@@ -77,44 +92,77 @@ body {
   justify-content: center;
   font-size: 2rem;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  animation: popIn 0.2s ease;
 }
 
 .cell:hover {
-  background-color: #f2f2f2;
+  background-color: #f5f5f5;
 }
 
+.cell:active {
+  transform: scale(0.92);
+}
+
+/* Animação do símbolo */
+.cell.filled {
+  animation: popSymbol 0.2s ease;
+}
+
+/* Vitória */
 .cell.win {
   background-color: #111;
   color: #fff;
+  animation: winPulse 0.4s ease infinite alternate;
 }
 
-.reset-btn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 0.9rem;
-  border: 1px solid #111;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.reset-btn:hover {
-  background-color: #111;
-  color: #fff;
-}
-
-.back-btn {
+/* Texto de status */
+p {
   margin-top: 10px;
-  padding: 8px 16px;
-  font-size: 0.85rem;
-  border: 1px solid #111;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  font-size: 1rem;
+  opacity: 0.8;
 }
 
-.back-btn:hover {
-  background-color: #111;
-  color: #fff;
+/* ===== ANIMAÇÕES ===== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes popSymbol {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes winPulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
 }
