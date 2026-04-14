@@ -41,6 +41,7 @@ body {
   color: #f5f5f5;
   cursor: pointer;
   transition: all 0.2s ease;
+  z-index: 10;
 }
 
 .back-btn:hover {
@@ -85,6 +86,7 @@ body {
   cursor: pointer;
 }
 
+/* CORES DOS BOTÕES */
 #choose-x {
   color: #00c853;
   border-color: #00c853;
@@ -93,6 +95,16 @@ body {
 #choose-o {
   color: #ff3b30;
   border-color: #ff3b30;
+}
+
+#choose-x:hover {
+  background-color: #00c853;
+  color: #0d0d0d;
+}
+
+#choose-o:hover {
+  background-color: #ff3b30;
+  color: #0d0d0d;
 }
 
 /* BOARD */
@@ -104,6 +116,7 @@ body {
   margin: 25px 0;
 }
 
+/* CELLS */
 .cell {
   aspect-ratio: 1 / 1;
   border: 1px solid #333;
@@ -114,12 +127,12 @@ body {
   cursor: pointer;
 }
 
-/* remover efeito "elástico" */
+/* remover efeito de clique */
 .cell:active {
   transform: none;
 }
 
-/* cores */
+/* CORES DOS SÍMBOLOS */
 .cell.x {
   color: #00c853;
 }
@@ -128,15 +141,16 @@ body {
   color: #ff3b30;
 }
 
-/* linha de vitória */
+/* LINHA DE VITÓRIA (FIX FINAL) */
 .win-line {
   position: absolute;
-  height: 2px;
-  background-color: white;
-  transform-origin: left center;
+  height: 3px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 5;
 }
 
-/* cores dinâmicas */
+/* CORES DINÂMICAS */
 .win-line.x {
   background-color: #00c853;
 }
@@ -145,12 +159,20 @@ body {
   background-color: #ff3b30;
 }
 
-/* animação suave */
-.win-line {
-  animation: drawLine 0.3s ease forwards;
+/* TEXTO */
+p {
+  font-size: 0.95rem;
+  opacity: 0.7;
 }
 
-/* animações */
+/* RESPONSIVO */
+@media (min-width: 600px) {
+  .title {
+    font-size: 3rem;
+  }
+}
+
+/* ANIMAÇÕES */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -159,14 +181,5 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes drawLine {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
   }
 }
