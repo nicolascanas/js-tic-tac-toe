@@ -60,3 +60,26 @@ body {
   background-color: #111;
   color: #fff;
 }
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 5px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.cell {
+  border: 1px solid #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cell:hover {
+  background-color: #f2f2f2;
+}

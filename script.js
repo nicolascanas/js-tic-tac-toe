@@ -1,6 +1,7 @@
 const app = document.getElementById("app");
 
 let selectedMode = null;
+let playerSymbol = null;
 
 function renderHome() {
   app.innerHTML = `
@@ -34,11 +35,34 @@ function renderSymbolSelection() {
   `;
 
   document.getElementById("choose-x").addEventListener("click", () => {
-    console.log("Mode:", selectedMode, "| Player chose: X");
+    playerSymbol = "X";
+    renderBoard();
   });
 
   document.getElementById("choose-o").addEventListener("click", () => {
-    console.log("Mode:", selectedMode, "| Player chose: O");
+    playerSymbol = "O";
+    renderBoard();
+  });
+}
+
+function renderBoard() {
+  app.innerHTML = `
+    <h1 class="title">Game Board</h1>
+
+    <div class="board">
+      ${Array(9)
+        .fill("")
+        .map((_, index) => `<div class="cell" data-index="${index}"></div>`)
+        .join("")}
+    </div>
+  `;
+
+  const cells = document.querySelectorAll(".cell");
+
+  cells.forEach(cell => {
+    cell.addEventListener("click", () => {
+      console.log("Clicked cell:", cell.dataset.index);
+    });
   });
 }
 
