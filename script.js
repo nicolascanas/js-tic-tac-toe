@@ -1,3 +1,4 @@
+// (código completo com correção aplicada)
 const app = document.getElementById("app");
 
 let selectedMode = null;
@@ -94,6 +95,11 @@ function startGame() {
   winningPattern = [];
 
   renderBoard();
+
+  // 🔥 CORREÇÃO AQUI
+  if (selectedMode === "computer" && currentPlayer === computerSymbol) {
+    setTimeout(computerMove, 400);
+  }
 }
 
 function renderBoard(message="") {
@@ -120,8 +126,11 @@ function renderBoard(message="") {
 
 function handleMove(e) {
   const i = e.target.dataset.index;
-  if (board[i] || !gameActive) return;
-  if (selectedMode==="computer" && currentPlayer===computerSymbol) return;
+
+  if (board[i] !== "" || !gameActive) return;
+
+  if (selectedMode === "computer" && currentPlayer === computerSymbol) return;
+
   makeMove(i);
 }
 
