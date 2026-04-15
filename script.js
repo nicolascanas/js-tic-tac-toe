@@ -1,4 +1,3 @@
-// (código completo com correção aplicada)
 const app = document.getElementById("app");
 
 let selectedMode = null;
@@ -90,13 +89,15 @@ function renderSymbolSelection() {
 
 function startGame() {
   board = Array(9).fill("");
-  currentPlayer = "X";
   gameActive = true;
   winningPattern = [];
 
+  // ✅ CORREÇÃO PRINCIPAL
+  currentPlayer = playerSymbol;
+
   renderBoard();
 
-  // 🔥 CORREÇÃO AQUI
+  // IA joga se for a vez dela
   if (selectedMode === "computer" && currentPlayer === computerSymbol) {
     setTimeout(computerMove, 400);
   }
